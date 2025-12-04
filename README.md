@@ -3,11 +3,11 @@
 
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/17b4f0e7-98fa-4c35-9b50-b88b7c5f0b6d" width="180"/>
+<img width="2560" height="1460" alt="image" src="https://github.com/user-attachments/assets/b7cb7851-32cb-4faf-88be-c43d0a7d143b" />
+
 
 <br><br>
 
-<img src="https://github.com/user-attachments/assets/2f3e07f8-56de-435b-a68d-6f30c2a865ed" width="100%" />
 <p><b>ChatGPT Clone – Home Page</b></p>
 </div>
 
