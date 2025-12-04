@@ -161,71 +161,71 @@ Create a new **Pipeline Job** → Paste below:
 # 🚀 **Final Jenkins Pipeline for ChatGPT Clone Deployment (Docker)**
 
 ```groovy
-pipeline {
+pipeline{
     agent any
-
-    environment {
-        SCANNER_HOME = tool 'sonar-scanner'
-        IMAGE = "abhipraydh96/chatgpt-fastapi"
-        APP_NAME = "chatgpt-app"
+    tools{
+        jdk 'jdk17'
+        nodejs 'node16'
     }
-
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
     stages {
-
-        stage('Pull Code') {
-            steps {
+        stage('Checkout from Git'){
+            steps{
                 git branch: 'main', url: 'https://github.com/abhipraydhoble/doesntmatter.git'
             }
         }
-
-        stage('SonarQube Analysis') {
+        stage('Install Dependencies') {
             steps {
+                sh "npm install"
+            }
+        }
+        stage("Sonarqube Analysis "){
+            steps{
                 withSonarQubeEnv('sonar-server') {
-                    sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectName=ChatGPT \
-                    -Dsonar.projectKey=ChatGPT
-                    '''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Chatbot \
+                    -Dsonar.projectKey=Chatbot '''
                 }
             }
         }
-
-        stage('Quality Gate') {
-            steps {
+        stage("quality gate"){
+           steps {
                 script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
-
-        stage('Trivy FS Scan') {
+        
+        stage('TRIVY FS SCAN') {
             steps {
-                sh "trivy fs . > trivy-fs-scan.txt"
+                sh "trivy fs . > trivyfs.json"
             }
         }
-
-        stage('Docker Build & Push') {
-            steps {
-                sh "docker build -t ${IMAGE} ."
-                withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh "docker push ${IMAGE}"
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker'){
+                       sh "docker build -t chatbot ."
+                  
+                    }
                 }
             }
         }
-
-        stage('Trivy Image Scan') {
-            steps {
-                sh "trivy image ${IMAGE} > trivy-image.txt"
+        stage("TRIVY"){
+            steps{
+                sh "trivy image chatbot > trivy.json"
             }
         }
-
-        stage('Deploy Container Locally') {
-            steps {
-                sh """
-                docker stop ${APP_NAME} || true
-                docker rm ${APP_NAME} || true
-                docker run -d --name ${APP_NAME} -p 8000:8000 ${IMAGE}
-                """
+        stage ("Remove container") {
+            steps{
+                sh "docker stop chatbot | true"
+                sh "docker rm chatbot | true"
+             }
+        }
+        stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name chatbot -p 3000:3000 chatbot'
             }
         }
     }
@@ -261,10 +261,10 @@ These are similar to what you’ll get:
 Visit:
 
 ```
-http://<EC2-IP>:8000
+http://<EC2-IP>:3000
 ```
+<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/5912d16c-700b-4287-b2aa-ef763781ad21" />
 
-<img width="100%" src="https://github.com/user-attachments/assets/fe5fbe19-e62f-42c7-b3e7-9454bc1cec5b"/>
 
 ---
 
