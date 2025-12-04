@@ -32,7 +32,7 @@ In this project, we deploy a **ChatGPT-Clone App** using:
 * Security Group:
 
   * 22 (SSH)
-  * 80 / 8000 (App)
+  * 80 / 3000 (App)
   * 8080 (Jenkins)
   * 9000 (SonarQube)
 
@@ -149,6 +149,7 @@ Stage View
 | JDK               | jdk17         | 17      |
 | SonarQube Scanner | sonar-scanner | latest  |
 | Docker            | docker        | system  |
+| nodejs             | node16       | 16.15.1 |
 
 ---
 
